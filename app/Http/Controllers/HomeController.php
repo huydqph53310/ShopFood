@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -11,7 +13,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $featuredProducts = Product::take(6)->get();
+        $categories = Category::all();
+        return view('home', compact('featuredProducts', 'categories'));
     }
 
     /**
@@ -60,5 +64,33 @@ class HomeController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function products(Request $request)
+    {
+        $query = Product::query();
+
+        // Search by name or description
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by category
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        $products = $query->get();
+        $categories = Category::all();
+        return view('products.index', compact('products', 'categories'));
+    }
+
+    public function productDetail(Product $product)
+    {
+        return view('products.detail', compact('product'));
     }
 }

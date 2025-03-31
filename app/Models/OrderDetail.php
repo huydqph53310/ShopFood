@@ -15,4 +15,12 @@ class OrderDetail extends Model
         'price',
         'quantity',
     ];
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+    public function productVariant()
+    {
+        return $this->belongsTo(ProductVariant::class);
+    }
 }

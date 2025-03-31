@@ -39,36 +39,54 @@
       <a href="{{ url('/') }}" class="logo d-flex align-items-center me-auto me-xl-0">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="{{ asset('assets/img/logo.png') }}" alt=""> -->
-        <h1 class="sitename">Yummy</h1>
+        <h1 class="sitename">QUOC HUY</h1>
         <span>.</span>
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="#hero">Home<br></a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#menu">Menu</a></li>
-          <li><a href="#events">Events</a></li>
-          <li><a href="#chefs">Chefs</a></li>
-          <li><a href="#gallery">Gallery</a></li>
-          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
+          <li class="{{ request()->routeIs('home') ? 'active' : '' }}">
+            <a href="{{ route('home') }}">Home<br></a>
           </li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#about">About</a></li>
+          <li class="{{ request()->routeIs('products.*') ? 'active' : '' }}">
+            <a href="{{ route('products.index') }}">Menu</a>
+          </li>
+          {{-- <li><a href="#events">Events</a></li> --}}
+          {{-- <li><a href="#chefs">Chefs</a></li> --}}
+          {{-- <li><a href="#gallery">Gallery</a></li> --}}
+          {{-- <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a> --}}
+            {{-- <ul> --}}
+              {{-- <li><a href="#">Dropdown 1</a></li> --}}
+              {{-- <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a> --}}
+                {{-- <ul> --}}
+                  {{-- <li><a href="#">Deep Dropdown 1</a></li> --}}
+                  {{-- <li><a href="#">Deep Dropdown 2</a></li> --}}
+                  {{-- <li><a href="#">Deep Dropdown 3</a></li> --}}
+                  {{-- <li><a href="#">Deep Dropdown 4</a></li> --}}
+                  {{-- <li><a href="#">Deep Dropdown 5</a></li> --}}
+                {{-- </ul> --}}
+              {{-- </li> --}}
+              {{-- <li><a href="#">Dropdown 2</a></li> --}}
+              {{-- <li><a href="#">Dropdown 3</a></li> --}}
+              {{-- <li><a href="#">Dropdown 4</a></li> --}}
+            {{-- </ul> --}}
+          {{-- </li> --}}
+          {{-- <li><a href="#contact">Contact</a></li> --}}
+          <li>
+            <a href="{{ route('cart.index') }}" class="position-relative">
+              <i class="bi bi-cart3"></i>
+              @php
+                $cart = \App\Models\Cart::first();
+                $itemCount = $cart ? $cart->items->count() : 0;
+              @endphp
+              @if($itemCount > 0)
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {{ $itemCount }}
+                </span>
+              @endif
+            </a>
+          </li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -79,6 +97,31 @@
   </header>
 
   <main class="main">
+
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     {{-- <!-- Page Title -->
     <div class="page-title" data-aos="fade">

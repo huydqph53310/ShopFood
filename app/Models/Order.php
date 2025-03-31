@@ -20,4 +20,8 @@ class Order extends Model
         'sale_price',
         'pay_amount',
     ];
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
 }
