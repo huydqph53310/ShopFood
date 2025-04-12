@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductVariant extends Model
 {
+    use HasFactory;
+    protected $table = 'productvariants';
     protected $fillable = [
         'product_id',
         'size_id',
@@ -13,7 +16,7 @@ class ProductVariant extends Model
         'price',
         'sale',
         'stock',
-        'image',
+        'image'
     ];
 
     public function product()
@@ -21,13 +24,18 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function color()
-    {
-        return $this->belongsTo(Color::class);
-    }
-
     public function size()
     {
         return $this->belongsTo(Size::class);
+    }
+
+    public function topping()
+    {
+        return $this->belongsTo(Topping::class);
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
     }
 }

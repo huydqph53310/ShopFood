@@ -53,14 +53,21 @@
                         <p class="card-text"><strong>Price: ${{ number_format($product->price, 2) }}</strong></p>
                         <div class="d-flex justify-content-between align-items-center">
                             <a href="{{ route('products.detail', $product) }}" class="btn btn-outline-primary">View Details</a>
-                            <form action="{{ route('cart.add', $product) }}" method="POST" class="d-inline">
+                            <form action="{{ route('cart.store', $product) }}" method="POST" class="d-inline add-to-cart-form">
                                 @csrf
-                                <div class="input-group">
-                                    <input type="number" name="quantity" class="form-control" value="1" min="1" style="max-width: 80px;">
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="bi bi-cart-plus"></i>
-                                    </button>
-                                </div>
+                                @if($product->variants->isNotEmpty())
+                                    <input type="hidden" name="variant_id" value="{{ $product->variants->first()->id }}">
+                                    <div class="input-group">
+                                        <input type="number" name="quantity" class="form-control" value="1" min="1" style="max-width: 80px;">
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="bi bi-cart-plus"></i>
+                                        </button>
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning">
+                                        Sản phẩm chưa có biến thể
+                                    </div>
+                                @endif
                             </form>
                         </div>
                     </div>
@@ -70,4 +77,33 @@
         </div>
     </div>
 </section>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('.add-to-cart-form').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        // Update cart count
+                        $('.cart-count').text(response.cart_count);
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                }
+            });
+        });
+    });
+</script>
+@endpush
 @endsection

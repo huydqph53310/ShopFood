@@ -8,7 +8,7 @@
         <!-- Product Image -->
         <div class="col-md-6 mb-4">
             @if($product->image)
-                <img src="{{ asset('assets/img'.'/' . $product->image) }}" class="img-fluid rounded" alt="{{ $product->name }}">
+                <img src="{{ asset('assets/img/' . $product->image) }}" class="img-fluid rounded" alt="{{ $product->name }}">
             @else
                 <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 400px;">
                     <i class="bi bi-image text-muted" style="font-size: 4rem;"></i>
@@ -26,28 +26,32 @@
 
             <p class="lead mb-4">{{ $product->description }}</p>
 
+            <!-- Product Variants -->
             <div class="mb-4">
-                <h3 class="text-danger">${{ number_format($product->price, 2) }}</h3>
-            </div>
-
-            <form action="{{ route('cart.add', $product) }}" method="POST" class="mb-4">
-                @csrf
-                <div class="input-group" style="max-width: 300px;">
-                    <input type="number" name="quantity" class="form-control" value="1" min="1">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-cart-plus"></i> Add to Cart
-                    </button>
-                </div>
-            </form>
-
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Product Details</h5>
-                    <ul class="list-unstyled">
-                        <li><strong>Category:</strong> {{ $product->category->name }}</li>
-                        <li><strong>Price:</strong> ${{ number_format($product->price, 2) }}</li>
-                        <li><strong>Created:</strong> {{ $product->created_at->format('M d, Y') }}</li>
-                    </ul>
+                <h4>Variants</h4>
+                <div class="list-group">
+                    @foreach($product->variants as $variant)
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">{{ $variant->name }}</h5>
+                                    <p class="mb-1 text-muted">Stock: {{ $variant->stock }}</p>
+                                </div>
+                                <div class="text-end">
+                                    <p class="mb-1 text-danger">${{ number_format($variant->price, 2) }}</p>
+                                    <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form">
+                                        @csrf
+                                        <input type="hidden" name="variant_id" value="{{ $variant->id }}">
+                                        <div class="mb-3">
+                                            <label for="quantity" class="form-label">Số lượng</label>
+                                            <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -55,14 +59,12 @@
 
     <!-- Related Products -->
     <div class="row mt-5">
-        <div class="col-12">
-            <h2 class="mb-4">Related Products</h2>
-        </div>
-        @foreach($product->category->products->where('id', '!=', $product->id)->take(3) as $relatedProduct)
+        <h3 class="mb-4">Related Products</h3>
+        @foreach($relatedProducts as $relatedProduct)
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 @if($relatedProduct->image)
-                    <img src="{{ asset('assets/img'.'/' . $relatedProduct->image) }}" class="card-img-top" alt="{{ $relatedProduct->name }}" style="height: 200px; object-fit: cover;">
+                    <img src="{{ asset('assets/img/' . $relatedProduct->image) }}" class="card-img-top" alt="{{ $relatedProduct->name }}" style="height: 200px; object-fit: cover;">
                 @endif
                 <div class="card-body">
                     <h5 class="card-title">{{ $relatedProduct->name }}</h5>
@@ -70,8 +72,9 @@
                     <p class="card-text"><strong>Price: ${{ number_format($relatedProduct->price, 2) }}</strong></p>
                     <div class="d-flex justify-content-between align-items-center">
                         <a href="{{ route('products.detail', $relatedProduct) }}" class="btn btn-outline-primary">View Details</a>
-                        <form action="{{ route('cart.add', $relatedProduct) }}" method="POST" class="d-inline">
+                        <form action="{{ route('cart.add') }}" method="POST">
                             @csrf
+                            <input type="hidden" name="variant_id" value="{{ $relatedProduct->variants->first()->id }}">
                             <div class="input-group">
                                 <input type="number" name="quantity" class="form-control" value="1" min="1" style="max-width: 80px;">
                                 <button type="submit" class="btn btn-danger">

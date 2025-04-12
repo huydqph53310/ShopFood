@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Cart extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'total_amount'
     ];
@@ -16,9 +19,9 @@ class Cart extends Model
         return $this->hasMany(CartItem::class);
     }
 
-    public function addItem($productId, $quantity, $price)
+    public function addItem($productId, $variantId, $quantity, $price)
     {
-        $item = $this->items()->where('product_id', $productId)->first();
+        $item = $this->items()->where('product_variant_id', $variantId)->first();
 
         if ($item) {
             $item->quantity += $quantity;
@@ -26,6 +29,7 @@ class Cart extends Model
         } else {
             $this->items()->create([
                 'product_id' => $productId,
+                'product_variant_id' => $variantId,
                 'quantity' => $quantity,
                 'price' => $price
             ]);

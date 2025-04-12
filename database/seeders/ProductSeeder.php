@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,101 +14,59 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $products = [
-            [
-                'name' => 'Classic Burger',
-                'code' => 'BURG001',
-                'description' => 'Juicy beef patty with fresh lettuce, tomatoes, and special sauce',
-                'price' => 12.99,
-                'image' => 'menu/menu-item-1.png',
-                'category_id' => 1,
-                'status' => 1
-            ],
-            [
-                'name' => 'Margherita Pizza',
-                'code' => 'PIZZ001',
-                'description' => 'Fresh tomatoes, mozzarella, basil, and olive oil',
-                'price' => 14.99,
-                'image' => 'menu/menu-item-2.png',
-                'category_id' => 2,
-                'status' => 1
-            ],
-            [
-                'name' => 'Caesar Salad',
-                'code' => 'SALD001',
-                'description' => 'Crisp romaine lettuce, croutons, parmesan cheese with Caesar dressing',
-                'price' => 8.99,
-                'image' => 'menu/menu-item-3.png',
-                'category_id' => 3,
-                'status' => 1
-            ],
-            [
-                'name' => 'Spaghetti Carbonara',
-                'code' => 'PAST001',
-                'description' => 'Pasta with eggs, cheese, pancetta, and black pepper',
-                'price' => 13.99,
-                'image' => 'menu/menu-item-4.png',
-                'category_id' => 2,
-                'status' => 1
-            ],
-            [
-                'name' => 'Grilled Salmon',
-                'code' => 'FISH001',
-                'description' => 'Fresh salmon fillet with seasonal vegetables',
-                'price' => 24.99,
-                'image' => 'menu/menu-item-5.png',
-                'category_id' => 4,
-                'status' => 1
-            ],
-            [
-                'name' => 'Chicken Wings',
-                'code' => 'WING001',
-                'description' => 'Crispy chicken wings with your choice of sauce',
-                'price' => 11.99,
-                'image' => 'menu/menu-item-6.png',
-                'category_id' => 1,
-                'status' => 1
-            ],
-            [
-                'name' => 'Vegetable Stir Fry',
-                'code' => 'VEGG001',
-                'description' => 'Mixed vegetables in a light soy sauce',
-                'price' => 9.99,
-                'image' => 'menu/menu-item-7.png',
-                'category_id' => 3,
-                'status' => 1
-            ],
-            [
-                'name' => 'Beef Tenderloin',
-                'code' => 'BEEF001',
-                'description' => 'Premium cut of beef with red wine sauce',
-                'price' => 29.99,
-                'image' => 'menu/menu-item-8.png',
-                'category_id' => 4,
-                'status' => 1
-            ],
-            [
-                'name' => 'Mushroom Risotto',
-                'code' => 'RICE001',
-                'description' => 'Creamy risotto with mixed mushrooms',
-                'price' => 16.99,
-                'image' => 'menu/menu-item-9.png',
-                'category_id' => 2,
-                'status' => 1
-            ],
-            [
-                'name' => 'Chocolate Cake',
-                'code' => 'DESS001',
-                'description' => 'Rich chocolate cake with ganache',
-                'price' => 6.99,
-                'image' => 'menu/menu-item-10.png',
-                'category_id' => 5,
-                'status' => 1
-            ]
-        ];
+        $banhMiCategory = Category::where('name', 'Bánh Mì')->first();
+        $cafeCategory = Category::where('name', 'Cà Phê')->first();
+        $traCategory = Category::where('name', 'Trà')->first();
 
-        foreach ($products as $product) {
-            Product::create($product);
-        }
+        // Bánh mì
+        Product::create([
+            'name' => 'Bánh Mì Thịt',
+            'description' => 'Bánh mì thịt nướng thơm ngon',
+            'image' => 'products/banh-mi-thit.jpg',
+            'category_id' => $banhMiCategory->id,
+            'status' => 'active'
+        ]);
+
+        Product::create([
+            'name' => 'Bánh Mì Chả',
+            'description' => 'Bánh mì kẹp chả lụa truyền thống',
+            'image' => 'products/banh-mi-cha.jpg',
+            'category_id' => $banhMiCategory->id,
+            'status' => 'active'
+        ]);
+
+        // Cà phê
+        Product::create([
+            'name' => 'Cà Phê Đen',
+            'description' => 'Cà phê đen đậm đà',
+            'image' => 'products/ca-phe-den.jpg',
+            'category_id' => $cafeCategory->id,
+            'status' => 'active'
+        ]);
+
+        Product::create([
+            'name' => 'Cà Phê Sữa',
+            'description' => 'Cà phê sữa béo ngậy',
+            'image' => 'products/ca-phe-sua.jpg',
+            'category_id' => $cafeCategory->id,
+            'status' => 'active'
+        ]);
+
+        // Trà
+        Product::create([
+            'name' => 'Trà Đào',
+            'description' => 'Trà đào thơm mát',
+            'image' => 'products/tra-dao.jpg',
+            'category_id' => $traCategory->id,
+            'status' => 'active'
+        ]);
+
+        Product::create([
+            'name' => 'Trà Chanh',
+            'description' => 'Trà chanh giải khát',
+            'image' => 'products/tra-chanh.jpg',
+            'category_id' => $traCategory->id,
+            'status' => 'active'
+        ]);
     }
 }

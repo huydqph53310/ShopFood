@@ -2,34 +2,29 @@
 
 namespace App\Models;
 
-use Carbon\Traits\LocalFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use LocalFactory;
+    use HasFactory;
 
     protected $fillable = [
-        'category_id',
-        'code',
         'name',
-        'image',
         'description',
-        'material',
-        'instruct',
-        'onpage',
+        'price',
+        'image',
         'status',
+        'category_id'
     ];
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-    public function productVariants()
+
+    public function variants()
     {
         return $this->hasMany(ProductVariant::class);
     }
-    public function orderDetails()
+
+    public function category()
     {
-        return $this->hasMany(OrderDetail::class);
+        return $this->belongsTo(Category::class);
     }
 }
